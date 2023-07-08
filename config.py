@@ -76,11 +76,11 @@ groups = [
     Group('2',label='Web'),
     Group('3',label='Term'),
     Group('4',label='File'),
-    Group('5',label='Disc'),
+    Group('5',label='Docs'),
     Group('6',label='Note'),
     Group('7',label='PDF'),
     Group('8',label='Music'),
-    Group('9',label='Doc'),
+    Group('9',label='Disc'),
     ]
 
 
@@ -146,6 +146,14 @@ powerline = {
      }
 '''
 
+#### Callbacks ####
+
+def wifimenu(qtile):
+    script = os.path.expanduser("~/.local/bin/wifimenu")
+    subprocess.call([script])
+
+
+#### Screen and Bar ####
 
 screens = [
     Screen(
@@ -213,7 +221,6 @@ screens = [
                     linewidth=1,
                     padding=10,
                     ),
-
                 widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
                 widget.Sep(
                     linewidth=1,
@@ -221,7 +228,8 @@ screens = [
                         ),
                 widget.Wlan(
                     format = "{essid}",
-                    mouse_callbacks = {"Button1": lazy.spawn("alacritty --hold -e cat .config/qtile/Guides/networkGuide.md")},
+                    #mouse_callbacks = {"Button1": lazy.spawn("alacritty --hold -e cat .config/qtile/Guides/networkGuide.md")},
+                    mouse_callbacks = {"Button1": lazy.function(wifimenu)},
                         ),
                 widget.Sep(
                     linewidth = 0, 
