@@ -72,7 +72,7 @@ keys = [
 ]
 
 groups = [
-    Group('1',label='Dev'),
+    Group('1',label='Work'),
     Group('2',label='Web'),
     Group('3',label='Term'),
     Group('4',label='File'),
