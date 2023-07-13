@@ -14,7 +14,7 @@ import re
 import socket
 import subprocess
 from libqtile import bar, layout, widget
-from libqtile.config import Click, Drag, Group, Key, Match, Screen
+from libqtile.config import Click, Drag, Group, Key, Match, Screen, ScratchPad, DropDown
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 from typing import List
@@ -56,7 +56,7 @@ keys = [
     Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
     Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
-    Key([mod,], "l", lazy.spawn("i3lock"), desc="Screenlock Qtile"),
+    Key([mod, "control"], "l", lazy.spawn("i3lock"), desc="Screenlock Qtile"),
     Key([mod], "r", lazy.spawn("rofi -combi-modi window, drun, ssh -font 'Jetbrains Mono 12' -show drun")),
 
     # Control Volume
@@ -67,7 +67,9 @@ keys = [
     # Brightness Controls
     Key([], "XF86MonBrightnessDown", lazy.spawn("light -U 10")),
     Key([], "XF86MonBrightnessUp", lazy.spawn("light -A 10")),
-
+    
+    # ScratchPad
+    Key([mod], "d", lazy.group['scratchpad'].dropdown_toggle('term')),
 
 ]
 
@@ -100,8 +102,18 @@ for i in groups:
                 lazy.window.togroup(i.name, switch_group=True),
                 desc="Switch to & move focused window to group {}".format(i.name),
             ),
+            # ScratchPad 
+            Key([mod], "space", lazy.group["scratchpad"].dropdown_toggle("term")),
         ]
     )
+
+
+# ScratchPad Groups
+groups.append(
+    ScratchPad("scratchpad", [
+        DropDown("term", terminal, height=0.5, width=0.80)
+    ])
+)
 
 
 layout_theme = {"border_width": 2,
@@ -113,7 +125,6 @@ layout_theme = {"border_width": 2,
 layouts = [
     layout.MonadTall(**layout_theme),
     layout.Max(**layout_theme),
-    layout.Floating(**layout_theme),
 ]
 
 
@@ -267,7 +278,7 @@ floating_layout = layout.Floating(
         Match(wm_class="ssh-askpass"),  # ssh-askpass
         Match(title="branchdialog"),  # gitk
         Match(title="pinentry"),  # GPG key password entry
-    ]
+    ], **layout_theme
 )
 auto_fullscreen = True
 focus_on_window_activation = "smart"
